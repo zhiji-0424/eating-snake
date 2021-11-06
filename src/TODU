@@ -1,0 +1,3 @@
+void ***_set_style(char style);
+
+
