@@ -10,8 +10,8 @@
 #include "score.h"
 
 
-int score;
-int highest;
+int score   = 0;
+int highest = 0;
 
 void score_rmall()
 {
@@ -35,8 +35,8 @@ void score_update()
 
 void score_read()
 {
-	FILE* fp = fopen(score_file, "r");
-	if (fp != NULL)
+	FILE* fp = fopen(score_file, "rb");
+	if (fp != null)
 	{
 		fread(&highest, sizeof(highest), 1, fp);
 		fclose(fp);
@@ -47,8 +47,8 @@ void score_read()
 
 void score_write()
 {
-	FILE* fp = fopen(score_file, "w");
-	if (fp != NULL)
+	FILE* fp = fopen(score_file, "wb");
+	if (fp != null)
 	{
 		fwrite(&highest, sizeof(highest), 1, fp);
 		fclose(fp);

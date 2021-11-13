@@ -10,7 +10,7 @@
 #include "food.h"
 
 
-food_t food;
+food_t food = { 0, 0, food_style };
 
 
 static int is_in_snake(int x, int y, snake_t *head)
@@ -44,4 +44,7 @@ point_t get_foodxy()
 	return xy;
 }
 
-
+food_t get_food()
+{
+	return food;
+}

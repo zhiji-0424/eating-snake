@@ -23,6 +23,11 @@
 #define CLEAR "\33[H\33[2J" 	//\33[3J"
 #define score_file "./.game-score"
 
+#define food_style '@'
+#define head_style 'O'
+#define body_style 'o'
+#define tail_style '0'
+
 // The Information of Point
 typedef struct
 {
@@ -56,8 +61,12 @@ struct node_st {
 #endif  /* endif __cpp */
 #endif  /* endif null */
 
+#ifndef false
 #define false 0
+#endif
+#ifndef true
 #define true (!false)
+#endif
 
 
 #endif

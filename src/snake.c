@@ -10,9 +10,9 @@
 #include "snake.h"
 
 
-snake_t *snake_head;
-int snake_len;
-int snake_direc;
+snake_t *snake_head = null;
+int snake_len   = 0;
+int snake_direc = 0;
 
 
 void snake_create()
@@ -21,6 +21,7 @@ void snake_create()
 			malloc(sizeof(snake_t));
 	snake_head->x = stage_w/2;
 	snake_head->y = stage_h/2;
+	snake_head->style = head_style;
 	snake_direc = to_up;
 	snake_head->next = null;
 	snake_len = 1;
@@ -42,7 +43,7 @@ void snake_destroy()
 	// Now let's delete the head.
 	free(snake_head);
 	snake_head = null;
-	snake_len = 0;
+	snake_len  = 0;
 }
 
 
@@ -111,6 +112,16 @@ void snake_forward()
 	
 	t1->x = snake_head->x;
 	t1->y = snake_head->y;
+	if (snake_len > 2)
+	{
+		// t1 is a body node.
+		t1->style = body_style;
+	}
+	else
+	{
+		// t1 is the tail.
+		t1->style = tail_style;
+	}
 	
 	update_head(snake_head, snake_direc);
 }
@@ -130,6 +141,12 @@ void snake_del_tail()
 		t2->next = null;
 		free(t1);
 		snake_len -= 1;
+		
+		if (snake_len > 1)
+		{
+			// t2 is the tail now.
+			t2->style = tail_style;
+		}
 	}
 }
 
