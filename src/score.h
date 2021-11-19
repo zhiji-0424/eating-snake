@@ -15,6 +15,12 @@
 #include "locals.h"
 
 
+int  get_score();
+void set_score(int n);
+
+int  get_highest();
+void set_highest(int n);
+
 // Make the value of all to 0,
 // include that in the file system.
 void score_rmall();

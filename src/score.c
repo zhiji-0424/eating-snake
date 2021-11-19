@@ -13,6 +13,26 @@
 int score   = 0;
 int highest = 0;
 
+int get_score()
+{
+	return score;
+}
+
+void set_score(int n)
+{
+	score = n;
+}
+
+int get_highest()
+{
+	return highest;
+}
+
+void set_highest(int n)
+{
+	highest = n;
+}
+
 void score_rmall()
 {
 	score   = 0;
