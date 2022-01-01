@@ -1,6 +1,6 @@
 sources = food.c score.c snake.c locals.c main.c
 objects = $(sources:.c=.o)
-linklib = -lm
+linklib = -lncurses -lm
 exefile = /home/tyri/bin/snake
 compile = gcc
 
