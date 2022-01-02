@@ -16,22 +16,14 @@
 #include "locals.h"
 
 
-void snake_create();
-void snake_destroy();
-
-snake_t *get_snake_head();
-int get_snake_len();
-int get_snake_direc();
-
 /* Won't delete tail node after forwarding. */
-void snake_forward();
-void snake_del_tail();
+void snake_forward(snake_env_t *env);
+void snake_del_tail(snake_env_t *env);
 /* It is smart. */
-void snake_change_direc(int direc);
+void snake_change_direc(snake_env_t *env, unsigned char direc);
 
-
-int is_snake_ate_food(snake_t *head, point_t food);
-int is_snake_ate_self(snake_t *head);
+int is_snake_ate_food(snake_env_t *env);
+int is_snake_ate_self(snake_env_t *env);
 
 
 #endif

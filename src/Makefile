@@ -1,12 +1,28 @@
-sources = food.c score.c snake.c locals.c main.c
+mainsrc = main.c
+mainobj = $(mainsrc:.c=.o)
+sources = food.c score.c snake.c locals.c
 objects = $(sources:.c=.o)
-linklib = -lncurses -lm
-exefile = /home/tyri/bin/snake
-compile = gcc
+sore    = eating-snake
+sorelib = lib$(sore).a
+linklib = -L. -l$(sore) -lncurses -lm
+exefile = ./snake
+compile = gcc -Wall -Wextra -Wshadow -pedantic -g
+
+RM = rm -f
+
 
 all: main
-main: $(objects)
-	gcc  -o $@ $^ $(linklib)
+main: $(sorelib) $(mainobj)
+	$(compile) -o $@ $(mainobj) $(linklib)
+	@-cp $@ $(exefile)
+
+$(sorelib): $(objects)
+	-$(RM) $@
+	ar rs $@ $^
+
+# objs =====================
+main.o: locals.h main.h main.c
+	$(compile) -c main.c
 
 food.o: locals.h food.h food.c
 	$(compile) -c food.c
@@ -21,7 +37,10 @@ locals.o: locals.h locals.c
 	$(compile) -c locals.c
 
 
+
 .PHONY: clean
 clean:
-	-rm -f $(objects)
-	-rm -f main
+	-$(RM) $(mainobj)
+	-$(RM) $(objects)
+	-$(RM) $(sorelib)
+	-$(RM) main $(exefile)

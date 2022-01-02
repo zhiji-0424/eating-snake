@@ -11,41 +11,35 @@
 #include "food.h"
 
 
-food_t food = { 0, 0, food_style };
-
-
-static int is_in_snake(int x, int y, snake_t *head)
+static inline int is_in_snake(int x, int y, snake_t *snake)
 {
-    snake_t *t1 = head;
+    /* check_ret(snake, false); */
+    /* check_ret(snake->node, false); */
+    body_t *t1 = snake->node;
     while (t1 != null)
     {
         if ((x == t1->x)
          && (y == t1->y))
         {
-            return 1;
+            return true;
         }
         t1 = t1->next;
     }
-    return 0;
+    return false;
 }
 
-void food_reappear(snake_t *head)
+void food_reappear(snake_env_t *env)
 {
+    check(env);
+    check(env->food);
+    check(env->snake);
+    check(env->snake->node);
     do
     {
-        food.x = rand() % stage_w;
-        food.y = rand() % stage_h;
+        env->food->x = rand() % stage_w;
+        env->food->y = rand() % stage_h;
     }
-    while (is_in_snake(food.x, food.y, head));
+    while (is_in_snake(
+        env->food->x, env->food->y, env->snake));
 }
 
-point_t get_foodxy()
-{
-    point_t xy = { food.x, food.y };
-    return xy;
-}
-
-food_t get_food()
-{
-    return food;
-}

@@ -1,3 +1,2 @@
-Do not use local vars in snake.c
 Continue main.c
 Think what the good game loop is.

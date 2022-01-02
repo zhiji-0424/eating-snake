@@ -12,16 +12,19 @@
 #define LOCALS_H
 
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #define stage_w 20
 #define stage_h 20
 
-// Direction
+/* Direction */
 #define to_up    '2'
 #define to_down  '8'
 #define to_left  '4'
 #define to_right '6'
 
-#define CLEAR "\33[H\33[2J"     //\33[3J"
+#define CLEAR "\33[H\33[2J"
 #define score_file "./game-score"
 
 #define food_style '@'
@@ -29,36 +32,74 @@
 #define body_style 'o'
 #define tail_style '0'
 
-// The Information of Point
+/* The Information of Point */
 typedef struct
 {
     int x;
     int y;
 } point_t;
 
-// The Infomation of Food
+/* The Infomation of Food */
 typedef struct
 {
     int x;
     int y;
-    char style;
+    unsigned char style;
 } food_t;
 
-// The Infomation of Snake
+/* The Infomation of Snake body */
 struct node_st;
-typedef struct node_st snake_t;
+typedef struct node_st body_t;
 struct node_st {
+    body_t *next;
     int x;
     int y;
-    char style;
-    snake_t *next;
+    unsigned char style;
 };
+
+/* The Information of Snake head */
+typedef struct
+{
+    body_t *node;
+    unsigned char len;
+    unsigned char direc;
+} snake_t;
+
+/* Two score */
+typedef struct
+{
+    unsigned int score;
+    unsigned int highest;
+} score_t;
+
+/* Snake data environment !!! */
+typedef struct
+{
+    snake_t *snake;
+    food_t  *food;
+    score_t *score;
+} snake_env_t;
+
+
+/* Create or Destroy snake */
+snake_t *snake_create();
+void snake_destroy(snake_t *snake_head);
+/* Create or Destroy food */
+food_t *food_create();
+void food_destroy(food_t *food);
+/* Create or Destroy score */
+score_t *score_create();
+void score_destroy(score_t *score);
+/* Create or Destroy environment */
+snake_env_t *snake_env_create();
+void snake_env_destroy(snake_env_t *env);
+
 
 #ifndef null
 #ifdef __cplusplus
 #define null 0
 #else
-#define null ((void *)0)
+#define null (void *)0
 #endif  /* endif __cpp */
 #endif  /* endif null */
 
@@ -66,8 +107,13 @@ struct node_st {
 #define false 0
 #endif
 #ifndef true
-#define true (!false)
+#define true !false
 #endif
+
+/* In order to make sure that operation is not null */
+/* Check the ptr. Only if ptf==null, return retv. */
+#define check_ret(ptr, retv) if (ptr == null) return retv
+#define check(ptr) if (ptr == null) return
 
 
 #endif

@@ -11,67 +11,72 @@
 #include "score.h"
 
 
-int score   = 0;
-int highest = 0;
-
-int get_score()
+void set_score(snake_env_t *env, unsigned int n)
 {
-    return score;
+    check(env);
+    check(env->score);
+    env->score->score = n;
 }
 
-void set_score(int n)
+void set_highest(snake_env_t *env, unsigned int n)
 {
-    score = n;
+    check(env);
+    check(env->score);
+    env->score->highest = n;
 }
 
-int get_highest()
+void score_rmall(snake_env_t *env)
 {
-    return highest;
+    check(env);
+    check(env->score);
+    env->score->score   = 0;
+    env->score->highest = 0;
+    score_write(env);
 }
 
-void set_highest(int n)
+void score_add(snake_env_t *env, unsigned int n)
 {
-    highest = n;
+    check(env);
+    check(env->score);
+    env->score->score += n;
 }
 
-void score_rmall()
+void score_update(snake_env_t *env)
 {
-    score   = 0;
-    highest = 0;
-    score_write();
-}
-
-void score_add(int n)
-{
-    score += n;
-}
-
-void score_update()
-{
-    if (score > highest)
+    check(env);
+    check(env->score);
+    if (env->score->score
+      > env->score->highest)
     {
-        highest = score;
+        env->score->highest
+        = env->score->score;
     }
 }
 
-void score_read()
+void score_read(snake_env_t *env)
 {
+    check(env);
+    check(env->score);
     FILE* fp = fopen(score_file, "rb");
     if (fp != null)
     {
-        fread(&highest, sizeof(highest), 1, fp);
+        fread( &(env->score->highest),
+               sizeof(env->score->highest), 1, fp);
         fclose(fp);
         return;
     }
-    highest = 0;
+    env->score->highest = 0;
 }
 
-void score_write()
+void score_write(snake_env_t *env)
 {
+    check(env);
+    check(env->score);
     FILE* fp = fopen(score_file, "wb");
     if (fp != null)
     {
-        fwrite(&highest, sizeof(highest), 1, fp);
+        fwrite( &(env->score->highest),
+                sizeof(env->score->highest), 1, fp);
         fclose(fp);
         return;
     }

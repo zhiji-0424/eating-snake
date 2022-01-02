@@ -18,12 +18,7 @@
 
 
 /* Recalculate the Position of Food */
-void food_reappear(snake_t *head);
-
-/* Get the Position of Food. */
-point_t get_foodxy();
-
-food_t get_food();
+void food_reappear(snake_env_t *env);
 
 
 #endif

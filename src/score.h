@@ -16,27 +16,19 @@
 #include "locals.h"
 
 
-int  get_score();
-void set_score(int n);
-
-int  get_highest();
-void set_highest(int n);
-
-// Make the value of all to 0,
-// include that in the file system.
-void score_rmall();
-
-// score += n;
-void score_add(int n);
-
-// If 'score' > 'highest', 'highest' = 'score';
-void score_update();
-
-// Read score from file system
-void score_read();
-
-// Write the highest score to file system
-void score_write();
+void set_score(snake_env_t *env, unsigned int n);
+void set_highest(snake_env_t *env, unsigned int n);
+/* Make the value of all to 0,
+ * include that in the file system. */
+void score_rmall(snake_env_t *env);
+/* score += n; */
+void score_add(snake_env_t *env, unsigned int n);
+/* If 'score' > 'highest', 'highest' = 'score'; */
+void score_update(snake_env_t *env);
+/* Read score from file system */
+void score_read(snake_env_t *env);
+/* Write the highest score to file system */
+void score_write(snake_env_t *env);
 
 
 #endif
