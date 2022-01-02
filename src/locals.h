@@ -21,7 +21,7 @@
 #define to_left  '4'
 #define to_right '6'
 
-#define CLEAR "\33[H\33[2J" 	//\33[3J"
+#define CLEAR "\33[H\33[2J"     //\33[3J"
 #define score_file "./game-score"
 
 #define food_style '@'
@@ -32,26 +32,26 @@
 // The Information of Point
 typedef struct
 {
-	int x;
-	int y;
+    int x;
+    int y;
 } point_t;
 
 // The Infomation of Food
 typedef struct
 {
-	int x;
-	int y;
-	char style;
+    int x;
+    int y;
+    char style;
 } food_t;
 
 // The Infomation of Snake
 struct node_st;
 typedef struct node_st snake_t;
 struct node_st {
-	int x;
-	int y;
-	char style;
-	snake_t *next;
+    int x;
+    int y;
+    char style;
+    snake_t *next;
 };
 
 #ifndef null

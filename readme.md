@@ -1,16 +1,22 @@
-# EatingSnake
+# eating-snake
 
-#### 介绍
-使用C语言编写的贪吃蛇小游戏
+#### Introduction
 
-#### 安装教程
+A little snake game written in C.
 
-1.  运行命令[make]
-2.  将生成的可执行文件放目录[~/.local/bin/]
-3.  完成
 
-#### 使用说明
+#### How to install
 
-1.  运行命令[eating-snake]
-2.  按键[H]查看帮助
+1.  Running 'make' command.
+2.  Move executable file to executable dir.
+3.  That's all.
 
+
+#### How to use
+
+1.  Enter 'eating-snake' to launcher game.
+2.  Press 'H' for help when game is running.
+
+
+## License
+The game eating-snake is developed by zhiji_0424, and uses the 《木兰宽松许可证, 第2版》《Mulan Permissive Software License，Version 2》.
