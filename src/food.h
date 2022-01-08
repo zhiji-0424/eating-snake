@@ -20,5 +20,7 @@
 /* Recalculate the Position of Food */
 void food_reappear(snake_env_t *env);
 
+food_t *get_food(snake_env_t *env);
+
 
 #endif

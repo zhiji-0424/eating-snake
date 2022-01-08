@@ -6,7 +6,8 @@ sore    = eating-snake
 sorelib = lib$(sore).a
 linklib = -L. -l$(sore) -lncurses -lm
 exefile = ./snake
-compile = gcc -Wall -Wextra -Wshadow -pedantic -g
+compile = gcc -Wall -Wextra -Wshadow -pedantic \
+    -ansi -O3 -fPIC -std=c99 -g
 
 RM = rm -f
 
@@ -17,7 +18,7 @@ main: $(sorelib) $(mainobj)
 	@-cp $@ $(exefile)
 
 $(sorelib): $(objects)
-	-$(RM) $@
+	@-$(RM) $@
 	ar rs $@ $^
 
 # objs =====================

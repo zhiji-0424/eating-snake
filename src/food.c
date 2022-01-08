@@ -43,3 +43,9 @@ void food_reappear(snake_env_t *env)
         env->food->x, env->food->y, env->snake));
 }
 
+
+food_t *get_food(snake_env_t *env)
+{
+    return env->food;
+}
+

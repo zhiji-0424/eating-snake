@@ -30,5 +30,7 @@ void score_read(snake_env_t *env);
 /* Write the highest score to file system */
 void score_write(snake_env_t *env);
 
+score_t *get_score(snake_env_t *env);
+
 
 #endif

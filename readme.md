@@ -2,7 +2,7 @@
 
 #### Introduction
 
-A little snake game written in C.
+A little snake game written in C and Ncurses.
 
 
 #### How to install
@@ -15,8 +15,8 @@ A little snake game written in C.
 #### How to use
 
 1.  Enter 'eating-snake' to launcher game.
-2.  Press 'H' for help when game is running.
+2.  Use 2846 to control the snake.
 
 
-## License
+#### License
 The game eating-snake is developed by zhiji_0424, and uses the 《木兰宽松许可证, 第2版》《Mulan Permissive Software License，Version 2》.

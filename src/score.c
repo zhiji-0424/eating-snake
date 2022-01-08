@@ -60,8 +60,9 @@ void score_read(snake_env_t *env)
     FILE* fp = fopen(score_file, "rb");
     if (fp != null)
     {
-        fread( &(env->score->highest),
-               sizeof(env->score->highest), 1, fp);
+        if (0 == fread( &(env->score->highest),
+               sizeof(env->score->highest), 1, fp))
+            env->score->highest = 0;
         fclose(fp);
         return;
     }
@@ -82,4 +83,8 @@ void score_write(snake_env_t *env)
     }
 }
 
+score_t *get_score(snake_env_t *env)
+{
+    return env->score;
+}
 

@@ -96,18 +96,18 @@ void snake_env_destroy(snake_env_t *env);
 
 
 #ifndef null
-#ifdef __cplusplus
-#define null 0
-#else
-#define null (void *)0
-#endif  /* endif __cpp */
-#endif  /* endif null */
+#  ifdef __cplusplus
+#    define null 0
+#  else
+#    define null (void *)0
+#  endif
+#endif
 
 #ifndef false
-#define false 0
+#  define false 0
 #endif
 #ifndef true
-#define true !false
+#  define true !false
 #endif
 
 /* In order to make sure that operation is not null */

@@ -157,3 +157,9 @@ int is_snake_ate_self(snake_env_t *env)
     }
     return false;
 }
+
+snake_t *get_snake(snake_env_t *env)
+{
+    return env->snake;
+}
+

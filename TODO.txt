@@ -1,2 +1,0 @@
-Continue main.c
-Think what the good game loop is.

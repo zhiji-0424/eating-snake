@@ -25,5 +25,7 @@ void snake_change_direc(snake_env_t *env, unsigned char direc);
 int is_snake_ate_food(snake_env_t *env);
 int is_snake_ate_self(snake_env_t *env);
 
+snake_t *get_snake(snake_env_t *env);
+
 
 #endif
