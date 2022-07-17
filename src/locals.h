@@ -29,8 +29,8 @@
 
 #define food_style '@'
 #define head_style 'O'
-#define body_style 'o'
-#define tail_style '0'
+#define body_style 'O' // 'o'
+#define tail_style 'O' // '0'
 
 /* The Information of Point */
 typedef struct
