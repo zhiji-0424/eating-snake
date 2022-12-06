@@ -1,7 +1,7 @@
 # exefile
-game-score
+game-score.txt
 main
-snake
+eating-snake
 
 # Prerequisites
 *.d
