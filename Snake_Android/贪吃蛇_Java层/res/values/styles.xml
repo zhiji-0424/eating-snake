@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style
+        name="app_theme"
+        parent="@android:style/Theme.DeviceDefault.Light">
+    </style>
+    <!-- <style
+        name="app_theme_fullscreen"
+        parent="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen">
+    </style> -->
+</resources>
