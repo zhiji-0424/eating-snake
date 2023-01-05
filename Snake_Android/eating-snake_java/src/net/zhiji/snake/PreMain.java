@@ -20,13 +20,20 @@ public class PreMain extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new View(this));
+        CrashHandler.init(getApplication(), getExternalFilesDir("")+"/run_time.log");
 
         if (debug_mode) {
             f1();
         } else {
-            startActivity(new Intent(this, Main.class));
+            start_game_activity();
             finish();
         }
+    }
+
+    private void start_game_activity() {
+        Intent intent = new Intent(this, Main.class);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void f1() {
@@ -46,7 +53,7 @@ public class PreMain extends Activity {
                 });
             builder.show();
         } else {
-            startActivity(new Intent(this, Main.class));
+            start_game_activity();
             finish();
         }
     }

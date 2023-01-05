@@ -2,16 +2,18 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-MY_MICRO := \
-    -DString_NDEBUG -Ddraw_NO_TEXTURE
-#    -DSTBI_ONLY_BMP -DSTBI_ONLY_PNG -DSTBI_ONLY_JPEG \
+MY_DEBUG_MODE := 
+
+MY_MICRO := $(MY_DEBUG_MODE) \
+    -DString_NDEBUG \
+    -DSTBI_ONLY_BMP -DSTBI_ONLY_PNG -DSTBI_ONLY_JPEG 
 
 MY_INCLUDE_PATH := /sdcard/games/.tyri/workspace/Android/MyAPIs/
-MY_TOOLS_DIR := /sdcard/games/.tyri/workspace/Android/MyAPIs/tools/
+MY_TOOLS_DIR := $(MY_INCLUDE_PATH)/tools/
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) $(MY_INCLUDE_PATH)
-LOCAL_CFLAGS   := -std=gnu11   -Wall -Wextra $(MY_MICRO)
-LOCAL_CPPFLAGS := -std=gnu++11 -Wall -Wextra $(MY_MICRO)
+LOCAL_CFLAGS   := -std=c99   -Wall -Wextra $(MY_MICRO)
+LOCAL_CPPFLAGS := -std=c++11 -Wall -Wextra $(MY_MICRO)
 LOCAL_LDLIBS   := -llog -landroid -lGLESv3 -lEGL
 
 LOCAL_STATIC_LIBRARIES := android_native_app_glue

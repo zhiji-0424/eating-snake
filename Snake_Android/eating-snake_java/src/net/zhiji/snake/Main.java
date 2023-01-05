@@ -1,12 +1,8 @@
 package net.zhiji.snake;
 
 import android.app.NativeActivity;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 public class Main extends NativeActivity {
 
@@ -22,7 +18,7 @@ public class Main extends NativeActivity {
 
     public void init_ui() {
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT >= 19) {
+        if (SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             setImmersiveSticky();
             View decorView = getWindow().getDecorView();
             decorView.setOnSystemUiVisibilityChangeListener

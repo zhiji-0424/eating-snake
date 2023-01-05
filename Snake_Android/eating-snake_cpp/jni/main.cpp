@@ -6,8 +6,8 @@
 #include "snake/Game.hpp"
 
 #define LOGE(...) Log_E("main", __VA_ARGS__)
-#if !defined(NDEBUG) && !defined(main_NDEBUG)
-#  define LOGD(...) Log_D("main", __VA_ARGS__);
+#if !defined(all_NDEBUG) && !defined(main_cpp_NDEBUG)
+#  define LOGD(...) Log_D("main", __VA_ARGS__)
 #else
 #  define LOGD(...) (void)0
 #endif
@@ -26,8 +26,10 @@ int32_t handle_input(struct android_app* app, AInputEvent *event);
 
 void android_main(struct android_app* app)
 {
-    Log_init(app->activity->externalDataPath);
-    Log_set_debug_mode(1);
+    Log_init(app->activity->externalDataPath, 0);
+#if !defined(all_NDEBUG)
+    Log_open_debug();   // 开启调试
+#endif
     app->onAppCmd     = handle_cmd;
     app->onInputEvent = handle_input;
 

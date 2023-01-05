@@ -2,8 +2,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS    := -std=gnu11   -Wall -Wextra
-LOCAL_CPPFLAGS  := -std=gnu++11 -Wall -Wextra
+LOCAL_CFLAGS    := -std=c99   -Wall -Wextra
+LOCAL_CPPFLAGS  := -std=c++11 -Wall -Wextra
 LOCAL_LDLIBS    := -llog -landroid -ldl
 LOCAL_MODULE    := main
 LOCAL_SRC_FILES := main.c
