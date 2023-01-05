@@ -9,10 +9,6 @@ public class Main extends NativeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initApp();
-    }
-
-    public void initApp() {
         init_ui();
     }
 
@@ -39,5 +35,29 @@ public class Main extends NativeActivity {
                                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
+    
+    private LinkedBlockingQueue<Integer> unicodeCharacterQueue;
+    
+    public int pollUnicodeChar() {
+        return unicodeCharacterQueue.poll();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            unicodeCharacterQueue.offer(event.getUnicodeChar(event.getMetaState()));
+        }
+        return super.dispatchKeyEvent(event);
+    }
+    
+    public void showSoftInput() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(this.getWindow().getDecorView(), 0);
+    }
+    
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getWindowToken(), 0);
     }
 }
