@@ -2,13 +2,20 @@
     Native层: (1)添加armeabi-v7a, (2)all_NDEBUG
     Java层：  (1)debug_mode = false; (2)项目分支releaase (3)项目刷新 (4)编译
     复制 libs/(两个ABI文件夹)
-    VIA浏览器[www.pgyer.com/app/publish]
+    签名
+    [www.pgyer.com/app/publish]
 
-适配 Android 12 (android:exported="true")
+适配 Android 5~13 (android:exported="true")
 
 3D:使用bgfx
 
-Android.mk --> 把 绘图API 单独编译成库
+把 绘图API 单独编译成库
+支持Android.mk和CMake
+
+Lua脚本编辑-运行
+dispatchKeyEvent
+NativeActivity
+
 设计UI库
 android文件选择器
 文本输入(选择、光标移动)
@@ -16,7 +23,7 @@ draw画文本(内置链表，不导出)
 画点
 画圆BUG: 不适应glViewport()分割，试用极限法画圆
 
-悬浮便签、相册（自定义扫描目录）、钟表(计时器、倒计时、表盘、每隔一段时间提醒)、词典(自己的、还有翻译API的)
+悬浮便签、相册（自定义扫描目录）、钟表(计时器、倒计时、表盘、每隔一段时间提醒)、词典(自己的)
 
 gitee更新 绘图API、贪吃蛇
 
@@ -44,6 +51,10 @@ json/database
 关于界面：
     图标设计：墨刀
     参与测评：
+
+返回键
+
+初始长度:3
 
 死亡时震动
 
