@@ -2,13 +2,17 @@ package net.zhiji.snake;
 
 import android.app.NativeActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Main extends NativeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        unicodeCharacterQueue = new LinkedBlockingQueue<Integer>();
         init_ui();
     }
 
@@ -37,16 +41,19 @@ public class Main extends NativeActivity {
                                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
     
+    // 必须new一个
     private LinkedBlockingQueue<Integer> unicodeCharacterQueue;
     
     public int pollUnicodeChar() {
-        return unicodeCharacterQueue.poll();
+        Integer unicode_char = unicodeCharacterQueue.poll();
+        return unicode_char!=null ? unicode_char : 0;
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            unicodeCharacterQueue.offer(event.getUnicodeChar(event.getMetaState()));
+            int unicode_char = event.getUnicodeChar(event.getMetaState());
+            unicodeCharacterQueue.offer(new Integer(unicode_char));
         }
         return super.dispatchKeyEvent(event);
     }
