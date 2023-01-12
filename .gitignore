@@ -3,6 +3,10 @@ game-score.txt
 main
 eating-snake
 
+# aide 工程文件
+bin/
+gen/
+
 # Prerequisites
 *.d
 
