@@ -1,18 +1,18 @@
 发布流程：
-    Native层: (1)添加armeabi-v7a, (2)all_NDEBUG
-    Java层：  (1)debug_mode = false; (2)项目分支releaase (3)项目刷新 (4)编译
+    Native层: (1)添加v7a v8a x86 x86_64, (2)设置不调试
+    Java层：  (1)debug_mode = false; (2)编译
     复制 libs/(两个ABI文件夹)
     签名
     [www.pgyer.com/app/publish]
 
-适配 Android 5~13 (android:exported="true")
-
-3D:使用bgfx
-
 仓库编辑代码时要在 develop 分支!!！！
+加上文件编辑时间
 
-把 绘图API 单独编译成库
-支持Android.mk和CMake
+适配 Android 5~13
+(android:exported="true")
+
+arm-v7a-neon
+Android文件（外部文件）系统访问
 
 Lua脚本编辑-运行
 dispatchKeyEvent
@@ -20,7 +20,7 @@ NativeActivity
 
 设计UI库
 android文件选择器
-文本输入(选择、光标移动)
+#文本输入(选择、光标移动)
 draw画文本(内置链表，不导出)
 画点
 画圆BUG: 不适应glViewport()分割，试用极限法画圆
@@ -41,22 +41,24 @@ utf8转换(错误判断)
 
 创建logcat接收器程序
 使用单Activity模式，调试时发生错误直接logcat
+测试：程序滑掉log是否仍然存在
 
-界面设计
+新的Activity输入文本
+重新界面设计
 
 坐标系转换--平面直角坐标系
 
 crash界面上传到 蒲公英
 
-json/database
-登录界面
+xml
+登录界面(QQ号可选)
 输入用户名字(记录分数)
 
-关于界面：
+关于(about)界面：
     图标设计：墨刀
     参与测评：
 
-返回键
+返回按钮
 
 初始长度:3
 
@@ -70,10 +72,12 @@ json/database
 规则说明：
     移动、死亡、开始暂停
 
-墙用同种方块
+墙用方块来表现
 
-增加难度：随机方块
+增加难度：随机出现方块
 
 屏幕满了？下一关
 
+显示更新内容
 
+自定义方块数量大小
