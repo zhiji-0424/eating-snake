@@ -1,0 +1,3 @@
+[submodule "libs/zjtools"]
+	path = libs/zjtools
+	url = https://gitee.com/zhiji-0424/zjtools
