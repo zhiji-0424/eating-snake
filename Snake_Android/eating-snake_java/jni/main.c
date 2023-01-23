@@ -39,8 +39,8 @@ void android_main(struct android_app* app)
 
     // 复制库文件
     char cmd[2000];
-    sprintf(cmd, "cp %s/libmain.so %s/libmain.so", exPath, inPath);
-    system("cmd");
+    sprintf(cmd, "cp %s/libmain.so %s/libmain.so 2>> %s", exPath, inPath, log_file_name);
+    system(cmd);
 
     // 指定库的路径
     char lib_path[150];
