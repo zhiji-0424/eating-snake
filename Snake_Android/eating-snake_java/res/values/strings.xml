@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">贪吃蛇</string>
-    <string name="CopyError_title">错误</string>
-    <string name="CopyError_message">（你现在处于调试模式）释放动态库时发生错误，请尝试卸载并安装正确版本，如仍无法解决请反馈，以下是错误信息：</string>
-    <string name="CopyError_exit">退出</string>
 </resources>

@@ -2,32 +2,24 @@
     Native层: (1)添加v7a v8a x86 x86_64, (2)设置不调试
     Java层：  (1)debug_mode = false; (2)编译
     复制 libs/(两个ABI文件夹)
-    签名
     [www.pgyer.com/app/publish]
 
-仓库编辑代码时要在 develop 分支!!！！
-加上文件编辑时间
 
 适配 Android 5~13
 (android:exported="true")
 
 arm-v7a-neon
-Android文件（外部文件）系统访问
 
 Lua脚本编辑-运行
-dispatchKeyEvent
-NativeActivity
 
-设计UI库
+设计UI库(或者寻找)
 android文件选择器
 #文本输入(选择、光标移动)
 draw画文本(内置链表，不导出)
 画点
 画圆BUG: 不适应glViewport()分割，试用极限法画圆
 
-悬浮便签、相册（自定义扫描目录）、钟表(计时器、倒计时、表盘、每隔一段时间提醒)、词典(自己的)
-
-gitee更新 绘图API、贪吃蛇
+钟表(计时器、倒计时、表盘、每隔一段时间提醒)、词典(自己的)
 
 utf8转换(错误判断)
 1. 0000 - 007f           | 0xxx xxxx
@@ -39,20 +31,13 @@ utf8转换(错误判断)
 [最多6字节；验证表达的字节数与实际字节数；除第一个外的字节都以10开头，单独出现就忽略]
 [增加函数：c_str字符串 ==> u16c数组，并在zj_string中集成]
 
-创建logcat接收器程序
-使用单Activity模式，调试时发生错误直接logcat
-测试：程序滑掉log是否仍然存在
+使用单Activity模式，调试时发生错误直接log_cat
 
-新的Activity输入文本
 重新界面设计
 
 坐标系转换--平面直角坐标系
 
 crash界面上传到 蒲公英
-
-xml
-登录界面(QQ号可选)
-输入用户名字(记录分数)
 
 关于(about)界面：
     图标设计：墨刀

@@ -8,3 +8,6 @@
 
 ## 许可证
 eating-snake 由 @zhiji_0424 编写, 许可证是[Mit许可证](https://mit-license.org/)。
+
+## 玩法
+TODO

@@ -13,30 +13,50 @@ static void log_cat(const char *msg) {
 }
 
 typedef void (*MainFunc)(struct android_app*);
-static const char* main_func_name = "android_main";
 static const char* exPath;
 static const char* inPath;
 
-void android_main(struct android_app* app) {
+#define OK  1
+#define ERR 0
+static int check(void)
+{
+    char* msg = dlerror();
+    if (msg != NULL) {
+        // 有错误信息
+        log_cat(msg);
+        return ERR;
+    }
+    return OK;
+}
+
+void android_main(struct android_app* app)
+{
     exPath = app->activity->externalDataPath;
     inPath = app->activity->internalDataPath;
-    sprintf(log_file_name, "%s/starter.log", exPath);
 
-    char* msg = NULL;
+    // 指定日志位置
+    sprintf(log_file_name, "%s/loader.log", exPath);
+
+    // 复制库文件
+    char cmd[2000];
+    sprintf(cmd, "cp %s/libmain.so %s/libmain.so", exPath, inPath);
+    system("cmd");
+
+    // 指定库的路径
     char lib_path[150];
-    // 指定库的路径并打开
     sprintf(lib_path, "%s/libmain.so", inPath);
+
+    // 读取库文件
     void* lib = dlopen(lib_path, RTLD_NOW);
-    if ((msg=dlerror(),msg)) {
-        log_cat(msg);
+    if (check() == ERR)
         return;
-    }
+
     // 解析函数并运行
-    MainFunc f = (MainFunc)dlsym(lib, main_func_name);
-    if ((msg=dlerror(),msg)) {
-        log_cat(msg);
-        return;
+    MainFunc f = (MainFunc)dlsym(lib, "android_main");
+    if (check() == OK) {
+        f(app);
     }
-    f(app);
+
+    // 关闭库文件
     dlclose(lib);
 }
