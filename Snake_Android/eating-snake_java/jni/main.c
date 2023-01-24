@@ -29,6 +29,32 @@ static int check(void)
     return OK;
 }
 
+static int32_t handle_input(struct android_app* app, AInputEvent *event)
+{
+    // 退出
+    ANativeActivity_finish(app->activity);
+    return 1;
+}
+
+static void handle_cmd(struct android_app* app, int32_t cmd)
+{
+}
+
+static void loop(struct android_app* app)
+{
+    app->onAppCmd     = handle_cmd;
+    app->onInputEvent = handle_input;
+    app->userData     = 0;
+    while (1) {
+        int ident, events;
+        struct android_poll_source* source;
+        while ((ident=ALooper_pollAll(0, NULL, &events, (void**)&source)) >= 0) {
+            if (source) source->process(app, source);
+            if (app->destroyRequested) return;
+        }
+    }
+}
+
 void android_main(struct android_app* app)
 {
     exPath = app->activity->externalDataPath;
@@ -40,6 +66,7 @@ void android_main(struct android_app* app)
     // 复制库文件
     char cmd[2000];
     sprintf(cmd, "cp %s/libmain.so %s/libmain.so 2>> %s", exPath, inPath, log_file_name);
+    log_cat(cmd);
     system(cmd);
 
     // 指定库的路径
@@ -48,15 +75,19 @@ void android_main(struct android_app* app)
 
     // 读取库文件
     void* lib = dlopen(lib_path, RTLD_NOW);
-    if (check() == ERR)
-        return;
-
-    // 解析函数并运行
-    MainFunc f = (MainFunc)dlsym(lib, "android_main");
     if (check() == OK) {
-        f(app);
+        // 解析函数并运行
+        MainFunc f = (MainFunc)dlsym(lib, "android_main");
+        if (check() == OK) {
+            f(app);
+        } else {
+            loop(app);
+        }
+    } else {
+        loop(app);
     }
 
     // 关闭库文件
     dlclose(lib);
 }
+
