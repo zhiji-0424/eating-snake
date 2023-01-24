@@ -62,6 +62,7 @@ void android_main(struct android_app* app)
 
     // 指定日志位置
     sprintf(log_file_name, "%s/loader.log", exPath);
+    log_cat("");    // 分割上一次的信息
 
     // 复制库文件
     char cmd[2000];
