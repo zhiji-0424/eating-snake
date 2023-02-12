@@ -102,7 +102,8 @@ void init(struct android_app* app)
     // ImFontConfig font_cfg;
     // font_cfg.SizePixels = 32.0f;
     // io.Fonts->AddFontDefault(&font_cfg);
-    io.Fonts->AddFontFromFileTTF("/system/fonts/DroidSans.ttf", 32.0f, NULL, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    // io.Fonts->AddFontFromFileTTF((data_path+"ubuntu.ttf").c_str(), 32.0f, NULL, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    io.Fonts->AddFontFromFileTTF((data_path+"ubuntu.ttf").c_str(), 32.0f);
 
     // Arbitrary scale-up
     // FIXME: Put some effort into DPI awareness
@@ -246,7 +247,7 @@ void android_main(struct android_app* app)
     app->onAppCmd = handleAppCmd;
     app->onInputEvent = handleInputEvent;
 
-    data_path = zj_string(app->activity->externalDataPath) + '/';
+    data_path = zj_string(app->activity->externalDataPath) + "/";
     zj_logger_init(data_path.c_str(), 0);
     zj_logger_open_log();
     zj_logger_open_debug();

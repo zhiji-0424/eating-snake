@@ -1,42 +1,10 @@
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
-
-MY_DEBUG_MODE := -DZJ_DEBUG_MAIN
-
-MY_MICRO := $(MY_DEBUG_MODE) \
-    -DSTBI_ONLY_BMP -DSTBI_ONLY_PNG -DSTBI_ONLY_JPEG \
-    
-
-MY_INCLUDE_PATH := /sdcard/games/.tyri/workspace/Android/MyAPIs/
-MY_TOOLS_DIR := $(MY_INCLUDE_PATH)/tools/
-
-LOCAL_C_INCLUDES := $(LOCAL_PATH) $(MY_INCLUDE_PATH)
-LOCAL_CFLAGS   := -std=c99   -Wall -Wextra $(MY_MICRO)
-LOCAL_CPPFLAGS := -std=c++11 -Wall -Wextra $(MY_MICRO)
-LOCAL_LDLIBS   := -llog -landroid -lGLESv3 -lEGL
+include $(call all-subdir-makefiles)
 
 #编译zjtool、imgui为静态库
 #处理DPI
 #整理main.cpp代码
 #中文显示错误
 #绘图API
-
-LOCAL_STATIC_LIBRARIES := android_native_app_glue
-LOCAL_MODULE := main
-
-LOCAL_SRC_FILES := \
-    src/main.cpp \
-    src/zj_logger.c \
-    src/zj_string.cpp \
-      src/imgui/imgui.cpp\
-      src/imgui/imgui_demo.cpp\
-      src/imgui/imgui_draw.cpp\
-      src/imgui/imgui_tables.cpp\
-      src/imgui/imgui_widgets.cpp\
-      src/imgui/imgui_impl_android.cpp\
-      src/imgui/imgui_impl_opengl3.cpp
-
-include $(BUILD_SHARED_LIBRARY)
-
-$(call import-module,android/native_app_glue)
+#zj_utf8_string

@@ -41,6 +41,7 @@ zj_string::zj_string(char ch)
             data[0] = ch;
             length  = 1;
             LOGD("zj_string(char): data:(%p)%s, length:%d", data, data, length);
+            return;
         } else {
             LOGE("zj_string(char): Fail to alloc memories!");
         }
