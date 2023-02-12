@@ -25,6 +25,7 @@ public class Main extends NativeActivity {
         }
     }
 
+    // TODO: 使用更兼容的方法
     public void setImmersiveSticky() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
