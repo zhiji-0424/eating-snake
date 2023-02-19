@@ -1,4 +1,4 @@
-// dear imgui, v1.89.3 WIP
+// dear imgui, v1.89.4 WIP
 // (drawing and font code)
 
 /*
@@ -26,13 +26,12 @@ Index of this file:
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "imgui.h"
-#ifndef IMGUI_DISABLE
-
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
 
+#include "imgui.h"
+#ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
 #ifdef IMGUI_ENABLE_FREETYPE
 #include "misc/freetype/imgui_freetype.h"
@@ -389,6 +388,8 @@ void ImDrawList::_ResetForNewFrame()
     IM_STATIC_ASSERT(IM_OFFSETOF(ImDrawCmd, ClipRect) == 0);
     IM_STATIC_ASSERT(IM_OFFSETOF(ImDrawCmd, TextureId) == sizeof(ImVec4));
     IM_STATIC_ASSERT(IM_OFFSETOF(ImDrawCmd, VtxOffset) == sizeof(ImVec4) + sizeof(ImTextureID));
+    if (_Splitter._Count > 1)
+        _Splitter.Merge(this);
 
     CmdBuffer.resize(0);
     IdxBuffer.resize(0);
@@ -2382,7 +2383,12 @@ static bool ImFontAtlasBuildWithStbTruetype(ImFontAtlas* atlas)
         ImFontBuildDstData& dst_tmp = dst_tmp_array[src_tmp.DstIndex];
         src_tmp.SrcRanges = cfg.GlyphRanges ? cfg.GlyphRanges : atlas->GetGlyphRangesDefault();
         for (const ImWchar* src_range = src_tmp.SrcRanges; src_range[0] && src_range[1]; src_range += 2)
+        {
+            // Check for valid range. This may also help detect *some* dangling pointers, because a common
+            // user error is to setup ImFontConfig::GlyphRanges with a pointer to data that isn't persistent.
+            IM_ASSERT(src_range[0] <= src_range[1]);
             src_tmp.GlyphsHighest = ImMax(src_tmp.GlyphsHighest, (int)src_range[1]);
+        }
         dst_tmp.SrcCount++;
         dst_tmp.GlyphsHighest = ImMax(dst_tmp.GlyphsHighest, src_tmp.GlyphsHighest);
     }
@@ -3573,19 +3579,17 @@ void ImFont::RenderText(ImDrawList* draw_list, float size, const ImVec2& pos, Im
         while (y + line_height < clip_rect.y && s < text_end)
         {
             const char* line_end = (const char*)memchr(s, '\n', text_end - s);
-            if (!line_end)
-                line_end = text_end;
             if (word_wrap_enabled)
             {
                 // FIXME-OPT: This is not optimal as do first do a search for \n before calling CalcWordWrapPositionA().
                 // If the specs for CalcWordWrapPositionA() were reworked to optionally return on \n we could combine both.
                 // However it is still better than nothing performing the fast-forward!
-                s = CalcWordWrapPositionA(scale, s, line_end, wrap_width);
+                s = CalcWordWrapPositionA(scale, s, line_end ? line_end : text_end, wrap_width);
                 s = CalcWordWrapNextLineStartA(s, text_end);
             }
             else
             {
-                s = line_end + 1;
+                s = line_end ? line_end + 1 : text_end;
             }
             y += line_height;
         }

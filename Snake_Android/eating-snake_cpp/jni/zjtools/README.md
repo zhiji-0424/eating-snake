@@ -1,0 +1,26 @@
+# zjtools
+
+#### 介绍
+我的工具代码
+
+#### 软件说明
+这是一个 C/C++ 库项目，并且支持所有架构
+
+#### 安装教程
+~~请使用 CMake 构建， 暂时不使用 Android.mk~~
+使用 **ndk-build** 构建，在 *jni/* 下执行 **ndk-build**
+
+
+#### 使用说明
+1. 通用库包含 logger, string, utf8转utf16
+2. 绘图库包含 draw, shader, android native app glue
+3. 过于简单，查看*.h/.hpp*文件即可
+
+
+#### 参与贡献
+
+1.  Fork 本仓库
+2.  新建 Feat_xxx 分支
+3.  提交代码
+4.  新建 Pull Request
+

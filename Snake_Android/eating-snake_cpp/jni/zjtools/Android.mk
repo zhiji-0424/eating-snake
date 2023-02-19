@@ -8,7 +8,7 @@ MY_MICRO := -DZJ_USES_ANDROID_NATIVE_APP_GLUE
 MY_FLAGS := -Wall -Wextra $(MY_MICRO)
 
 # 源代码位置
-MY_SRC_DIR := $(LOCAL_PATH)/src/
+MY_SRC_DIR := $(LOCAL_PATH)/
 
 # 源代码
 LOCAL_SRC_FILES :=  $(MY_SRC_DIR)/draw/stb_image.cpp \
@@ -22,11 +22,18 @@ LOCAL_SRC_FILES :=  $(MY_SRC_DIR)/draw/stb_image.cpp \
                     $(MY_SRC_DIR)/common/zj_logger.c
 
 # FLAGS
-#LOCAL_CFLAGS   := -std=c99   $(MY_FLAGS)
-#LOCAL_CPPFLAGS := -std=c++11 $(MY_FLAGS)
+LOCAL_CFLAGS   := -std=c99   $(MY_FLAGS)
+LOCAL_CPPFLAGS := -std=c++11 $(MY_FLAGS)
+
+# 导出
+LOCAL_EXPORT_C_INCLUDES := $(MY_SRC_DIR) $(MY_SRC_DIR)/draw $(MY_SRC_DIR)/common
+LOCAL_EXPORT_LDLIBS     := -lGLESv3 -lEGL -landroid
 
 # 模块名字
 LOCAL_MODULE := zjtools
+
+# 需要的库
+LOCAL_STATIC_LIBRARIES := android_native_app_glue
 
 # 开始构建
 include $(BUILD_STATIC_LIBRARY)
