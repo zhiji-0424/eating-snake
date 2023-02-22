@@ -26,6 +26,9 @@ zj_string data_path;
 zj_egl_state egl_state;
 ImVec2 touch_pos;
 
+//平面直角坐标系
+//绘图API包装
+//跨平台编译
 
 // 当窗口重开时
 void init_display(struct android_app* app)
@@ -76,7 +79,8 @@ void on_loop()
     
     int x = touch_pos.x;
     int y = touch_pos.y;
-    ImGui::GetBackgroundDrawList()->AddCircleFilled(ImVec2(x, y), y, IM_COL32(255, 0, 0, 200), 0);
+    LOGI("x: %d, y: %d", x, y);
+    ImGui::GetBackgroundDrawList()->AddCircleFilled(ImVec2(x, y), 100, IM_COL32(255, 0, 0, 200), 0);
 }
 
 // 对 on_loop 的包装
