@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-# 必要的宏定义
+# 必要的宏定义（可选）
 MY_MICRO := -DZJ_USES_ANDROID_NATIVE_APP_GLUE
 
 MY_FLAGS := -Wall -Wextra $(MY_MICRO)
@@ -21,7 +21,7 @@ LOCAL_SRC_FILES :=  $(MY_SRC_DIR)/draw/stb_image.cpp \
                     $(MY_SRC_DIR)/common/zj_utf8_to_utf16.c \
                     $(MY_SRC_DIR)/common/zj_logger.c
 
-# FLAGS
+# FLAGS （可改）
 LOCAL_CFLAGS   := -std=c99   $(MY_FLAGS)
 LOCAL_CPPFLAGS := -std=c++11 $(MY_FLAGS)
 
