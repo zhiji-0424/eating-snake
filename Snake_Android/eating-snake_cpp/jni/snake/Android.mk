@@ -2,6 +2,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+MY_MICRO := -DZJ_USES_ANDROID_NATIVE_APP_GLUE
+
 MY_FLAGS := -Wall -Wextra $(MY_MICRO)
 
 # FLAGS

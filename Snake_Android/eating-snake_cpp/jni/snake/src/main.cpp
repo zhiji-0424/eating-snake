@@ -17,8 +17,6 @@
 #endif
 
 #include <zj_string.hpp>
-
-#define ZJ_USES_ANDROID_NATIVE_APP_GLUE
 #include <zj_android_native_app_glue.hpp>
 
 
