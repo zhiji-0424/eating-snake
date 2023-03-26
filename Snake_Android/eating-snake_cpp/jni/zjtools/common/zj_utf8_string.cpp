@@ -71,7 +71,7 @@ int32_t zj_utf8_string::create(const char* origin_str)
 
 void zj_utf8_string::destroy()
 {
-
+    while (delete_str(0) == ok);
 }
 
 // 在 index 前面插入, 返回错误码
@@ -83,7 +83,7 @@ int32_t zj_utf8_string::insert_str(int32_t index, const char* str)
 {
     // 处理索引
     if (index < 0) {
-        index = this->length + index;   // index<0 是用'+'号没错
+        index = this->length + index;   // (index < 0) 是用'+'号没错
     }
     // 检查范围
     if ((0 > index) || (this->length-1 < index)) {
@@ -101,16 +101,19 @@ int32_t zj_utf8_string::insert_str(int32_t index, const char* str)
     }
     // 连接节点
     if (length == 0) {
+        // 直接添加节点
         this->head = new_node;
         this->length += 1;
         new_node->next = nullptr;
     } else {
         index -= 1;
         if (index == -1) {
+            // 添加为第一个节点
             new_node->next = (struct zj_utf8_code*)this->head;
             this->head = new_node;
             this->length += 1;
         } else { // 0~inf
+            // 去到目标节点的前一个节点
             struct zj_utf8_code* t1 = (struct zj_utf8_code*)this->head;
             for (int32_t i = 0; i < index; ++i) {
                 t1 = t1->next;
@@ -125,7 +128,31 @@ int32_t zj_utf8_string::insert_str(int32_t index, const char* str)
 // 删除索引为 index 的字符
 int32_t zj_utf8_string::delete_str(int32_t index)
 {
-
+    // 处理索引
+    if (index < 0) {
+        index = this->length + index;   // (index < 0) 是用'+'号没错
+    }
+    // 检查范围
+    if ((0 > index) || (this->length-1 < index)) {
+        LOGE("zj_utf8_string::insert_str(): out of range!");
+        return out_of_range;
+    }
+    if (index == 0) {
+        // 如果刚好是第一个节点
+        struct zj_utf8_code* node = this->head; // 暂时保存待删除的节点的地址
+        this->head = this->head->next;          // 连接
+        free(node);                             // 删除节点
+    } else {
+        // 去到目标节点的前一个结点
+        struct zj_utf8_code* t1 = this->head;
+        for (int32_t i = 0; i < index-1; ++i) {
+            t1 = t1->next;
+        }
+        struct zj_utf8_code* t2 = t1->next; // 暂时保存待删除的节点的地址
+        t1->next = t1->next->next;          // 连接
+        free(t2);                           // 删除节点
+    }
+    return ok;
 }
 
 char* zj_utf8_string::get_string() const
