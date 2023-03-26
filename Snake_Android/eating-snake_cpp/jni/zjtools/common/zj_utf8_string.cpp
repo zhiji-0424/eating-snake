@@ -139,12 +139,12 @@ int32_t zj_utf8_string::delete_str(int32_t index)
     }
     if (index == 0) {
         // 如果刚好是第一个节点
-        struct zj_utf8_code* node = this->head; // 暂时保存待删除的节点的地址
-        this->head = this->head->next;          // 连接
+        struct zj_utf8_code* node = (struct zj_utf8_code*)this->head; // 暂时保存待删除的节点的地址
+        this->head = ((struct zj_utf8_code*)this->head)->next;          // 连接
         free(node);                             // 删除节点
     } else {
         // 去到目标节点的前一个结点
-        struct zj_utf8_code* t1 = this->head;
+        struct zj_utf8_code* t1 = (struct zj_utf8_code*)this->head;
         for (int32_t i = 0; i < index-1; ++i) {
             t1 = t1->next;
         }
