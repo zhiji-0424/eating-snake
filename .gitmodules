@@ -1,6 +1,1 @@
-[submodule "Snake_Android/eating-snake_cpp/jni/zjtools"]
-	path = Snake_Android/eating-snake_cpp/jni/zjtools
-	url = https://gitee.com/zhiji-0424/zjtools
-[submodule "Snake_Android/eating-snake_cpp/jni/imgui"]
-	path = Snake_Android/eating-snake_cpp/jni/imgui
-	url = https://github.com/ocornut/imgui
+
