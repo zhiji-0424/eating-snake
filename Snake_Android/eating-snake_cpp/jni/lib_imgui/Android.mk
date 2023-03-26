@@ -4,7 +4,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := dear_imgui
 
-ImGui_DIR := ../imgui
+ImGui_DIR := ../imgui-1.89.4
 
 # 导出
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/$(ImGui_DIR)  $(LOCAL_PATH)/$(ImGui_DIR)/backends
