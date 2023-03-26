@@ -10,7 +10,7 @@ MY_FLAGS := -Wall -Wextra $(MY_MICRO)
 LOCAL_CFLAGS   := -std=c99      $(MY_MICRO)
 LOCAL_CPPFLAGS := -std=c++11    $(MY_MICRO)
 
-LOCAL_STATIC_LIBRARIES := android_native_app_glue dear_imgui zjtools
+LOCAL_STATIC_LIBRARIES := android_native_app_glue  dear_imgui  zjtools
 LOCAL_MODULE := main
 
 #源文件
