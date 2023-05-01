@@ -23,8 +23,6 @@ extern "C" {
  */
 #endif
 
-#define ZJ_DEFAULT_FILE_NAME "run_time.log"
-
 /* 初始化(设定日志文件路径, 文件名默认是“run_time.log”)
  * file_name 传0则使用默认名字。 */
 void zj_logger_init(const char* file_dir_path, const char* file_name);

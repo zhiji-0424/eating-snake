@@ -10,8 +10,6 @@
 #include "zj_android_native_app_glue.hpp"   // 需要 "ZJ_USES_ANDROID_NATIVE_APP_GLUE"
 #include "../common/zj_string.hpp"
 #include "../common/zj_logger.h"
-#include "../common/zj_vecs.hpp"
-#include "../common/zj_rect.hpp"
 
 #include "stb_image.h"
 class zj_texture {

@@ -32,8 +32,7 @@ static char* create_data(size_t size)
 }
 
 zj_utf8_string::zj_utf8_string() : head(nullptr), length(0)
-{
-}
+{}
 
 zj_utf8_string::zj_utf8_string(char ch) : head(nullptr), length(0)
 {

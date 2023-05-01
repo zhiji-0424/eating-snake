@@ -1,3 +1,8 @@
+#define STBI_ONLY_BMP
+#define STBI_ONLY_PNG
+#define STBI_ONLY_JPEG
+
+
 /* stb_image - v2.27 - public domain image loader - http://nothings.org/stb
                                   no warranty implied; use at your own risk
 

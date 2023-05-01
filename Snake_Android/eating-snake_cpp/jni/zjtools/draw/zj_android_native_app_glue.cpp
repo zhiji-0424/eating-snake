@@ -1,5 +1,4 @@
 #include "zj_android_native_app_glue.hpp"
-#if defined(ZJ_ANDROID_NATIVE_APP_GLUE_HPP)
 
 #define LOGE(...) zj_logger_e("zj_android_native_app_glue", __VA_ARGS__);
 #if defined(ZJ_DEBUG_ALL) || defined(ZJ_DEBUG_GLUE)
@@ -61,10 +60,10 @@ int zjglue_init_display(struct android_app* app, struct zj_egl_state* egl)
     egl->surface = surface;
 
     // Initialize GL state.
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_CULL_FACE);
+    // glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     return 0;
 }
@@ -83,5 +82,3 @@ void zjglue_term_display(struct zj_egl_state* egl)
     egl->context = EGL_NO_CONTEXT;
     egl->surface = EGL_NO_SURFACE;
 }
-
-#endif //ZJ_ANDROID_NATIVE_APP_GLUE_HPP

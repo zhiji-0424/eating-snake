@@ -9,13 +9,14 @@
 (android:exported="true"
 android:debuggable)
 
-arm-v7a-neon
-
 
 
 
 1. string-utf8
-2. 绘制文本
+
+防返回键误触
+限制显示区域
+字体缩放(使用DPI)
 
 
 

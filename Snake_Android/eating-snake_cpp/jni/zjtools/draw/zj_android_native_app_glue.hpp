@@ -1,10 +1,7 @@
-// Last edit time is 2023-01-13 23:51:19. By zhiji 
-#if defined(ZJ_USES_ANDROID_NATIVE_APP_GLUE) && !defined(ZJ_ANDROID_NATIVE_APP_GLUE_HPP)
+#if !defined(ZJ_ANDROID_NATIVE_APP_GLUE_HPP)
 #define ZJ_ANDROID_NATIVE_APP_GLUE_HPP
 
 // 专为NativeActivity准备
-// 请在 编译器FLAGS 定义"ZJ_USES_ANDROID_NATIVE_APP_GLUE"
-// 编译（包含并使用此文件的文件）和（定义这些函数的文件）需要此FLAGS
 
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>

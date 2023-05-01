@@ -6,6 +6,7 @@
 #define FILE_PATH_LEN 1024
 #define FILE_NAME_LEN 100
 #define Log_BUF_LEN   200
+#define ZJ_DEFAULT_FILE_NAME "run_time.log"
 
 static char file_path[FILE_PATH_LEN];
 static int  log_mode   = zj_logger_OFF;

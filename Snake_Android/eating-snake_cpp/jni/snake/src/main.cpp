@@ -1,290 +1,173 @@
-// dear imgui: standalone example application for Android + OpenGL ES 3
-// If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
-
 #include <imgui.h>
 #include <imgui_impl_android.h>
 #include <imgui_impl_opengl3.h>
+
 #include <android/log.h>
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
+
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 
-// Data
-static EGLDisplay           g_EglDisplay = EGL_NO_DISPLAY;
-static EGLSurface           g_EglSurface = EGL_NO_SURFACE;
-static EGLContext           g_EglContext = EGL_NO_CONTEXT;
-static struct android_app*  g_App = NULL;
-static bool                 g_Initialized = false;
-static char                 g_LogTag[] = "ImGuiExample";
+#include <common/zj_logger.h>
+#define LOGI(...) zj_logger_i("main", __VA_ARGS__)
+#define LOGE(...) zj_logger_e("main", __VA_ARGS__)
+#if defined(ZJ_DEBUG_MAIN)
+#  define LOGD(...) zj_logger_d("main", __VA_ARGS__)
+#endif
 
-void init(struct android_app* app)
+#include <common/zj_string.hpp>
+#include <draw/zj_android_native_app_glue.hpp>
+
+
+zj_string data_path;
+zj_egl_state egl_state;
+ImVec2 touch_pos;
+struct android_app* app;
+
+//平面直角坐标系
+//绘图API包装
+//跨平台编译
+
+// 当窗口重开时
+void init_display(struct android_app* app)
 {
-    if (g_Initialized)
-        return;
-
-    g_App = app;
-    ANativeWindow_acquire(g_App->window);
-
+    ::app = app;
     // Initialize EGL
-    // This is mostly boilerplate code for EGL...
-    {
-        g_EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        if (g_EglDisplay == EGL_NO_DISPLAY)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglGetDisplay(EGL_DEFAULT_DISPLAY) returned EGL_NO_DISPLAY");
-
-        if (eglInitialize(g_EglDisplay, 0, 0) != EGL_TRUE)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglInitialize() returned with an error");
-
-        const EGLint egl_attributes[] = { EGL_BLUE_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_RED_SIZE, 8, EGL_DEPTH_SIZE, 24, EGL_SURFACE_TYPE, EGL_WINDOW_BIT, EGL_NONE };
-        EGLint num_configs = 0;
-        if (eglChooseConfig(g_EglDisplay, egl_attributes, nullptr, 0, &num_configs) != EGL_TRUE)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglChooseConfig() returned with an error");
-        if (num_configs == 0)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglChooseConfig() returned 0 matching config");
-
-        // Get the first matching config
-        EGLConfig egl_config;
-        eglChooseConfig(g_EglDisplay, egl_attributes, &egl_config, 1, &num_configs);
-        EGLint egl_format;
-        eglGetConfigAttrib(g_EglDisplay, egl_config, EGL_NATIVE_VISUAL_ID, &egl_format);
-        ANativeWindow_setBuffersGeometry(g_App->window, 0, 0, egl_format);
-
-        const EGLint egl_context_attributes[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE };
-        g_EglContext = eglCreateContext(g_EglDisplay, egl_config, EGL_NO_CONTEXT, egl_context_attributes);
-
-        if (g_EglContext == EGL_NO_CONTEXT)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglCreateContext() returned EGL_NO_CONTEXT");
-
-        g_EglSurface = eglCreateWindowSurface(g_EglDisplay, egl_config, g_App->window, NULL);
-        eglMakeCurrent(g_EglDisplay, g_EglSurface, g_EglSurface, g_EglContext);
-    }
+    zjglue_init_display(app, &egl_state);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
-    // Disable loading/saving of .ini file from disk.
-    // FIXME: Consider using LoadIniSettingsFromMemory() / SaveIniSettingsToMemory() to save in appropriate location for Android.
     io.IniFilename = NULL;
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsLight();
+    ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplAndroid_Init(g_App->window);
+    ImGui_ImplAndroid_Init(app->window);
     ImGui_ImplOpenGL3_Init("#version 300 es");
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    // - Android: The TTF files have to be placed into the assets/ directory (android/app/src/main/assets), we use our GetAssetData() helper to retrieve them.
+    ImVector<ImWchar> ranges;
+    ImFontGlyphRangesBuilder builder;
+    builder.AddText("敬业的语言学家每日委托按下退出");
+    builder.AddText("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 .,?!@\"\':;…+-*/=~()[]{}<>([{<>}])|_\\^`&#%$·");                        // Add a string (here "Hello world" contains 7 unique characters)
+    // builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon()); // Add one of the default ranges
+    builder.BuildRanges(&ranges);                          // Build the final result (ordered ranges with all the unique characters submitted)
 
-    // We load the default font with increased size to improve readability on many devices with "high" DPI.
-    // FIXME: Put some effort into DPI awareness.
-    // Important: when calling AddFontFromMemoryTTF(), ownership of font_data is transfered by Dear ImGui by default (deleted is handled by Dear ImGui), unless we set FontDataOwnedByAtlas=false in ImFontConfig
-    ImFontConfig font_cfg;
-    font_cfg.SizePixels = 32.0f;
-    io.Fonts->AddFontDefault(&font_cfg);
-    void* font_data;
-    int font_data_size;
-    ImFont* font;
-    //font_data_size = GetAssetData("Roboto-Medium.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 16.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("Cousine-Regular.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 15.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("DroidSans.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 64.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("ProggyTiny.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 10.0f);
-    //IM_ASSERT(font != NULL);
-    //font_data_size = GetAssetData("ArialUni.ttf", &font_data);
-    //font = io.Fonts->AddFontFromMemoryTTF(font_data, font_data_size, 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
+    io.Fonts->AddFontFromFileTTF((data_path+"zh-cn.ttf").c_str(), 32.0f, nullptr, ranges.Data);
+    io.Fonts->Build();                                     // Build the atlas while 'ranges' is still in scope and not deleted.
 
     // Arbitrary scale-up
-    // FIXME: Put some effort into DPI awareness
-    // ImGui::GetStyle().ScaleAllSizes(4.0f);
-
-    g_Initialized = true;
+    ImGui::GetStyle().ScaleAllSizes(1.0f);
 }
 
-ImVec2 pos1 = ImVec2(300, 100);
-ImVec2 pos2 = ImVec2(200, 0);
-ImVec2 pos3 = ImVec2(100, 200);
-bool show1 = true;
-bool show2 = true;
-bool show3 = true;
-bool show4 = true;
+// 当窗口关闭时
+void term_display()
+{
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplAndroid_Shutdown();
+    ImGui::DestroyContext();
+}
 
+// 开始循环
+void on_loop()
+{
+    //ImGui::Begin("ys");
+    ImGui::Begin("每日委托");
+    ImGui::Text("敬业的语言学家...");
+    ImGui::Text("......hhh.");
+    //ImGui::Text("=====================");
+    if (ImGui::Button("按下退出")) {
+        ANativeActivity_finish(app->activity);
+    }
+    ImGui::End();
+    
+    int x = touch_pos.x;
+    int y = touch_pos.y;
+    // LOGI("x: %d, y: %d", x, y);
+    ImGui::GetBackgroundDrawList()->AddCircleFilled(ImVec2(x, y), 10, IM_COL32(255, 0, 0, 200), 0);
+}
+
+// 对 on_loop 的包装
 void tick()
 {
-    ImGuiIO& io = ImGui::GetIO();
-    if (g_EglDisplay == EGL_NO_DISPLAY)
+    if (egl_state.display == EGL_NO_DISPLAY)
         return;
-
-    // Open on-screen (soft) input if requested by Dear ImGui
-    static bool WantTextInputLast = false;
-    if ((io.WantTextInput && !WantTextInputLast) || (!io.WantTextInput && WantTextInputLast))
-        ;//AndroidToggleKeyboard();什么也不做
-    WantTextInputLast = io.WantTextInput;
+    ImGuiIO& io = ImGui::GetIO();
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplAndroid_NewFrame();
     ImGui::NewFrame();
 
-// =====API绘图开始===========================================
-// 都是加入绘图列表
-// 除了画圆，更多的API请在 imgui_draw.cpp 和 imgui_demo.cpp 里阅读。
-
-
-    ImGui::Begin("Hello!");
-    int w = (int)io.DisplaySize.x;
-    int h = (int)io.DisplaySize.y;
-    if (show1) pos1.y+=1;
-    if (show2) pos2.y+=5;
-    if (show3) pos3.y+=7;
-    if (pos1.y > h) pos1.y = 100;
-    if (pos2.y > h) pos2.y = 0;
-    if (pos3.y > h) pos3.y = 200;
-
-//    ImGui::SetWindowPos(ImVec2(w*0.05, w*0.05), ImGuiCond_Always);
-    ImGui::SetWindowSize(ImVec2(w-w*0.1, w-w*0.1), ImGuiCond_Always);
-    ImGui::Button("Please try to move this window!");
-    ImGui::Checkbox("show green circle(drawed in window)", &show1);
-    ImGui::Checkbox("show dark blue circle(background)", &show2);
-    ImGui::Checkbox("show light blue circle(foreground)", &show3);
-    ImGui::Checkbox("show red circle(drawed in window and follow window)", &show4);
-    // 在窗口里面画(在哪画透明度都可调)
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    ImVec2 window_pos = ImGui::GetWindowPos();
-    if (show4) draw_list->AddCircle(ImVec2(window_pos.x+200, window_pos.y+20), 300, IM_COL32(255, 0, 0, 150), 0, 100);
-    // 比较一下上一句和下一句
-    if (show1) draw_list->AddCircle(pos1, 300, IM_COL32(0, 250, 0, 150), 0, 100);
-    ImGui::End();
-    
-    // 在窗口之外画（被挡住）
-    draw_list = ImGui::GetBackgroundDrawList();
-    if (show2) draw_list->AddCircle(pos2, 300, IM_COL32(0, 0, 255, 255), 0, 100);
-
-    // 在窗口之外画（挡住窗口）
-    draw_list = ImGui::GetForegroundDrawList();
-    if (show3) draw_list->AddCircle(pos3, 300, IM_COL32(0, 200, 255, 255), 0, 100);
-
-
-
-// ======结束==========================================
+    on_loop();
 
     // Rendering
     ImGui::Render();
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(0.2f, 0.1f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    eglSwapBuffers(g_EglDisplay, g_EglSurface);
+    eglSwapBuffers(egl_state.display, egl_state.surface);
 }
 
-void shutdown()
-{
-    if (!g_Initialized)
-        return;
-
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplAndroid_Shutdown();
-    ImGui::DestroyContext();
-
-    if (g_EglDisplay != EGL_NO_DISPLAY)
-    {
-        eglMakeCurrent(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-
-        if (g_EglContext != EGL_NO_CONTEXT)
-            eglDestroyContext(g_EglDisplay, g_EglContext);
-
-        if (g_EglSurface != EGL_NO_SURFACE)
-            eglDestroySurface(g_EglDisplay, g_EglSurface);
-
-        eglTerminate(g_EglDisplay);
-    }
-
-    g_EglDisplay = EGL_NO_DISPLAY;
-    g_EglContext = EGL_NO_CONTEXT;
-    g_EglSurface = EGL_NO_SURFACE;
-    ANativeWindow_release(g_App->window);
-
-    g_Initialized = false;
-}
-
-static void handleAppCmd(struct android_app* app, int32_t appCmd)
+static void handle_cmd(struct android_app* app, int32_t appCmd)
 {
     switch (appCmd)
     {
-    case APP_CMD_SAVE_STATE:
-        break;
-    case APP_CMD_INIT_WINDOW:
-        init(app);
-        break;
-    case APP_CMD_TERM_WINDOW:
-        shutdown();
-        break;
-    case APP_CMD_GAINED_FOCUS:
-        break;
-    case APP_CMD_LOST_FOCUS:
-        break;
+        case APP_CMD_INIT_WINDOW:
+            init_display(app);
+            break;
+        case APP_CMD_TERM_WINDOW:
+            term_display();
+            break;
     }
 }
 
-static int32_t handleInputEvent(struct android_app* app, AInputEvent* inputEvent)
+static int32_t handle_input(struct android_app* app, AInputEvent* event)
 {
-    if (AKeyEvent_getAction(inputEvent))
-    {
-        // int code = AKeyEvent_getKeyCode(inputEvent);
-        // int meta_state = AMotionEvent_getMetaState(inputEvent);
-        // int unicode_key = AndroidGetUnicodeChar(code, meta_state);
-        // ImGui::GetIO().AddInputCharacter(unicode_key);
+    switch (AInputEvent_getType(event)) {
+        case AINPUT_EVENT_TYPE_MOTION: {
+            touch_pos.x = AMotionEvent_getX(event, 0);
+            touch_pos.y = AMotionEvent_getY(event, 0);
+        }
     }
-    return ImGui_ImplAndroid_HandleInputEvent(inputEvent);
+    return ImGui_ImplAndroid_HandleInputEvent(event);
 }
 
 void android_main(struct android_app* app)
 {
-    app->onAppCmd = handleAppCmd;
-    app->onInputEvent = handleInputEvent;
+    app->onAppCmd     = handle_cmd;
+    app->onInputEvent = handle_input;
+
+    data_path = zj_string(app->activity->externalDataPath) + "/";
+    zj_logger_init(data_path.c_str(), 0);
+    zj_logger_open_log();
+    zj_logger_open_debug();
 
     while (true)
     {
         int out_events;
         struct android_poll_source* out_data;
 
-        // Poll all events. If the app is not visible, this loop blocks until g_Initialized == true.
-        while (ALooper_pollAll(g_Initialized ? 0 : -1, NULL, &out_events, (void**)&out_data) >= 0)
+        while (ALooper_pollAll(0, NULL, &out_events, (void**)&out_data) >= 0)
         {
             // Process one event
             if (out_data != NULL)
                 out_data->process(app, out_data);
 
-            // Exit the app by returning from within the infinite loop
             if (app->destroyRequested != 0)
-            {
-                // shutdown() should have been called already while processing the
-                // app command APP_CMD_TERM_WINDOW. But we play save here
-                if (!g_Initialized)
-                    shutdown();
-
                 return;
-            }
         }
 
         // Initiate a new frame
         tick();
     }
+
+    zj_logger_stop();
 }
