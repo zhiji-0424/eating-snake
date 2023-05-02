@@ -22,9 +22,9 @@
 
 #include <jni.h>
 static void ShowInputDialog(void);
-//Java_net_zhiji_snake_Main_putEditedString(JNIEnv* env, jobject, jstring edited_string) {
+static bool IsInputing(void);
+static zj_string GetEditedString(void);
 static int GetAssetData(const char* filename, void** out_data);
-zj_string edited_string;
 
 zj_string data_path;
 zj_egl_state egl_state;
@@ -59,7 +59,7 @@ void init_display(struct android_app* app)
 
     ImVector<ImWchar> ranges;
     ImFontGlyphRangesBuilder builder;
-    builder.AddText("敬业的语言学家每日委托按下退出你好书，是人类进步的阶梯，苏联作家高尔基的一句话道出了书的重要。书可谓是众多名人的“宠儿”。历来，名人说出关于书的名言数不胜数。都说书重要，还有的更以读书为重。的确，书很重要，但我以为读书似乎更重要。读一本好书犹如春风化雨滋润焦渴的心田!沉浸在读书的世界里，更像乘坐“书”舟，遨游知识的海洋!");
+    builder.AddText("敬业的语言学家每日委托按下退出你好");
     builder.AddRanges(io.Fonts->GetGlyphRangesDefault()); // Add one of the default ranges
     builder.BuildRanges(&ranges);                          // Build the final result (ordered ranges with all the unique characters submitted)
 
@@ -81,43 +81,28 @@ void term_display()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplAndroid_Shutdown();
     ImGui::DestroyContext();
+    zjglue_term_display(&egl_state);    //BUG已修复：HOME键后多任务界面无法再打开此程序
 }
 
-char aaa[8];
 // 开始循环
 void on_loop()
 {
     ImGuiIO& io = ImGui::GetIO();
 
-    // Open on-screen (soft) input if requested by Dear ImGui
-    static bool WantTextInputLast = false;
-    if (io.WantTextInput && !WantTextInputLast)
-        ShowInputDialog();
-    WantTextInputLast = io.WantTextInput;
-
-
     bool sdmwd = true;
     ImGui::ShowDemoWindow(&sdmwd);
 
-    //ImGui::Begin("ys");
     ImGui::Begin("每日委托");
     ImGui::Text("敬业的语言学家...");
-    ImGui::Text("书，是人类进步的阶梯，苏联作家高尔基的一句话道出了书的重要。");
-    ImGui::Text("书可谓是众多名人的“宠儿”。历来，名人说出关于书的名言数不胜数。");
-    ImGui::Text("都说书重要，还有的更以读书为重。的确，书很重要，但我以为读书似乎更重要。");
-    ImGui::Text("读一本好书犹如春风化雨滋润焦渴的心田!");
-    ImGui::Text("沉浸在读书的世界里，更像乘坐“书”舟，遨游知识的海洋!");
     ImGui::Text("......hhh.");
-    //ImGui::Text("=====================");
+    ImGui::Text("=====================");
     if (ImGui::Button("按下退出")) {
         ANativeActivity_finish(app->activity);
     }
-    ImGui::InputText("Hello你好", aaa, IM_ARRAYSIZE(aaa));
     ImGui::End();
-    
+
     int x = touch_pos.x;
     int y = touch_pos.y;
-    // LOGI("x: %d, y: %d", x, y);
     ImGui::GetForegroundDrawList()->AddCircleFilled(ImVec2(x, y), 10, IM_COL32(255, 0, 0, 200), 0);
 }
 
@@ -159,13 +144,6 @@ static void handle_cmd(struct android_app* app, int32_t appCmd)
 
 static int32_t handle_input(struct android_app* app, AInputEvent* event)
 {
-    /*if (AKeyEvent_getAction(event))
-    {
-        int code = AKeyEvent_getKeyCode(event);
-        int meta_state = AMotionEvent_getMetaState(event);
-        int unicode_key = AndroidGetUnicodeChar(code, meta_state);
-        ImGui::GetIO().AddInputCharacter(unicode_key);
-    }*/
     switch (AInputEvent_getType(event)) {
         case AINPUT_EVENT_TYPE_MOTION: {
             touch_pos.x = AMotionEvent_getX(event, 0);
@@ -244,12 +222,80 @@ static void ShowInputDialog()
     //return 0;
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_net_zhiji_snake_Main_putEditedString(JNIEnv* env, jobject ins, jstring edited_string) {
-    //if (::edited_stringd.size()!=0) ::edited_string = "";
-    const char* c_edited_string = env->GetStringUTFChars(edited_string, 0);
-    ::edited_string = c_edited_string;
-    env->ReleaseStringUTFChars(edited_string, c_edited_string);
+static bool IsInputing()
+{
+    JavaVM* java_vm = app->activity->vm;
+    JNIEnv* java_env = NULL;
+
+    jint jni_return = java_vm->GetEnv((void**)&java_env, JNI_VERSION_1_6);
+    if (jni_return == JNI_ERR)
+        LOGE("IsInputing(): -1");
+        //return -1;
+
+    jni_return = java_vm->AttachCurrentThread(&java_env, NULL);
+    if (jni_return != JNI_OK)
+        LOGE("IsInputing(): -2");
+        //return -2;
+
+    jclass native_activity_clazz = java_env->GetObjectClass(app->activity->clazz);
+    if (native_activity_clazz == NULL)
+        LOGE("IsInputing(): -3");
+        //return -3;
+
+    jmethodID method_id = java_env->GetMethodID(native_activity_clazz, "isInputing", "()Z");
+    if (method_id == NULL)
+        LOGE("IsInputing(): -3");
+        //return -4;
+
+    //调用函数
+    jboolean ret = java_env->CallBooleanMethod(app->activity->clazz, method_id);
+
+    jni_return = java_vm->DetachCurrentThread();
+    if (jni_return != JNI_OK)
+        LOGE("IsInputing(): -5");
+        //return -5;
+
+    return (JNI_TRUE==ret) ? true : false;
+}
+
+static zj_string GetEditedString()
+{
+    JavaVM* java_vm = app->activity->vm;
+    JNIEnv* java_env = NULL;
+
+    jint jni_return = java_vm->GetEnv((void**)&java_env, JNI_VERSION_1_6);
+    if (jni_return == JNI_ERR)
+        LOGE("GetEditedString(): -1");
+        //return -1;
+
+    jni_return = java_vm->AttachCurrentThread(&java_env, NULL);
+    if (jni_return != JNI_OK)
+        LOGE("GetEditedString(): -2");
+        //return -2;
+
+    jclass native_activity_clazz = java_env->GetObjectClass(app->activity->clazz);
+    if (native_activity_clazz == NULL)
+        LOGE("GetEditedString(): -3");
+        //return -3;
+
+    jmethodID method_id = java_env->GetMethodID(native_activity_clazz, "getEditedString", "()Ljava/lang/String;");
+    if (method_id == NULL)
+        LOGE("GetEditedString(): -3");
+        //return -4;
+
+    //调用函数
+    jstring jstr = (jstring)java_env->CallObjectMethod(app->activity->clazz, method_id);
+    const char* c_str = java_env->GetStringUTFChars(jstr, 0);
+    zj_string ret_str = c_str;
+    java_env->ReleaseStringUTFChars(jstr, c_str);
+    java_env->DeleteLocalRef(jstr);
+
+    jni_return = java_vm->DetachCurrentThread();
+    if (jni_return != JNI_OK)
+        LOGE("GetEditedString(): -5");
+        //return -5;
+
+    return ret_str;
 }
 
 // Helper to retrieve data placed into the assets/ directory (android/app/src/main/assets)

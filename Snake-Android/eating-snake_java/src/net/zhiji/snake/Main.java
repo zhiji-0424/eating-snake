@@ -9,8 +9,9 @@ import android.widget.EditText;
 
 public class Main extends NativeActivity {
 
-    public native void putEditedString(String edited_str);
     EditText editor = null;
+    String edited_string = null;
+    boolean is_inputing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class Main extends NativeActivity {
     }
 
     public void showInputDialog() {
+        edited_string = "";
         runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -53,17 +55,30 @@ public class Main extends NativeActivity {
                     bd.setPositiveButton(R.string.input_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                putEditedString(editor.getText().toString());
+                                is_inputing = false;
+                                edited_string = editor.getText().toString();
                             }
                         });
                     bd.setNegativeButton(R.string.input_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                is_inputing = false;
                             }
                         });
                     bd.setCancelable(false);    //防止误触退出
                     bd.show();
+                    is_inputing = true;
                 }
             });
+    }
+
+    public boolean isInputing() {
+        return is_inputing;
+    }
+
+    public String getEditedString() {
+        String ret = edited_string;
+        edited_string = "";
+        return ret;
     }
 }
