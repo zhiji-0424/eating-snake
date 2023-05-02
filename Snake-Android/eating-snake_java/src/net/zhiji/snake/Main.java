@@ -1,10 +1,16 @@
 package net.zhiji.snake;
 
+import android.app.AlertDialog;
 import android.app.NativeActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 public class Main extends NativeActivity {
+
+    public native void putEditedString(String edited_str);
+    EditText editor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +40,30 @@ public class Main extends NativeActivity {
                                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
+
+    public void showInputDialog() {
+        runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog.Builder bd = new AlertDialog.Builder(Main.this);
+                    bd.setTitle(R.string.input_dialog_title);
+                    editor = new EditText(Main.this);
+                    bd.setView(editor);
+                    bd.setPositiveButton(R.string.input_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                putEditedString(editor.getText().toString());
+                            }
+                        });
+                    bd.setNegativeButton(R.string.input_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                    bd.setCancelable(false);    //防止误触退出
+                    bd.show();
+                }
+            });
     }
 }
