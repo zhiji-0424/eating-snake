@@ -28,12 +28,8 @@ static int GetAssetData(const char* filename, void** out_data);
 
 zj_string data_path;
 zj_egl_state egl_state;
-ImVec2 touch_pos;
 struct android_app* app;
-
-//平面直角坐标系
-//绘图API包装
-//跨平台编译
+ImVec2 touch_pos;
 
 // 当窗口重开时
 void init_display(struct android_app* app)
@@ -192,32 +188,37 @@ static void ShowInputDialog()
     JNIEnv* java_env = NULL;
 
     jint jni_return = java_vm->GetEnv((void**)&java_env, JNI_VERSION_1_6);
-    if (jni_return == JNI_ERR)
+    if (jni_return == JNI_ERR) {
         LOGE("ShowInputDialog(): -1");
-        //return -1;
+        return;
+    }
 
     jni_return = java_vm->AttachCurrentThread(&java_env, NULL);
-    if (jni_return != JNI_OK)
+    if (jni_return != JNI_OK) {
         LOGE("ShowInputDialog(): -2");
-        //return -2;
+        return;
+    }
 
     jclass native_activity_clazz = java_env->GetObjectClass(app->activity->clazz);
-    if (native_activity_clazz == NULL)
+    if (native_activity_clazz == NULL) {
         LOGE("ShowInputDialog(): -3");
-        //return -3;
+        return;
+    }
 
     jmethodID method_id = java_env->GetMethodID(native_activity_clazz, "showInputDialog", "()V");
-    if (method_id == NULL)
+    if (method_id == NULL) {
         LOGE("ShowInputDialog(): -3");
-        //return -4;
+        return;
+    }
 
     //调用函数
     java_env->CallVoidMethod(app->activity->clazz, method_id);
 
     jni_return = java_vm->DetachCurrentThread();
-    if (jni_return != JNI_OK)
+    if (jni_return != JNI_OK) {
         LOGE("ShowInputDialog(): -5");
-        //return -5;
+        return;
+    }
 
     //return 0;
 }
@@ -228,32 +229,37 @@ static bool IsInputing()
     JNIEnv* java_env = NULL;
 
     jint jni_return = java_vm->GetEnv((void**)&java_env, JNI_VERSION_1_6);
-    if (jni_return == JNI_ERR)
+    if (jni_return == JNI_ERR) {
         LOGE("IsInputing(): -1");
-        //return -1;
+        return false;
+    }
 
     jni_return = java_vm->AttachCurrentThread(&java_env, NULL);
-    if (jni_return != JNI_OK)
+    if (jni_return != JNI_OK) {
         LOGE("IsInputing(): -2");
-        //return -2;
+        return false;
+    }
 
     jclass native_activity_clazz = java_env->GetObjectClass(app->activity->clazz);
-    if (native_activity_clazz == NULL)
+    if (native_activity_clazz == NULL) {
         LOGE("IsInputing(): -3");
-        //return -3;
+        return false;
+    }
 
     jmethodID method_id = java_env->GetMethodID(native_activity_clazz, "isInputing", "()Z");
-    if (method_id == NULL)
+    if (method_id == NULL) {
         LOGE("IsInputing(): -3");
-        //return -4;
+        return false;
+    }
 
     //调用函数
     jboolean ret = java_env->CallBooleanMethod(app->activity->clazz, method_id);
 
     jni_return = java_vm->DetachCurrentThread();
-    if (jni_return != JNI_OK)
+    if (jni_return != JNI_OK) {
         LOGE("IsInputing(): -5");
-        //return -5;
+        return false;
+    }
 
     return (JNI_TRUE==ret) ? true : false;
 }
@@ -264,24 +270,32 @@ static zj_string GetEditedString()
     JNIEnv* java_env = NULL;
 
     jint jni_return = java_vm->GetEnv((void**)&java_env, JNI_VERSION_1_6);
-    if (jni_return == JNI_ERR)
+    if (jni_return == JNI_ERR) {
         LOGE("GetEditedString(): -1");
-        //return -1;
+        zj_string e;
+        return e;
+    }
 
     jni_return = java_vm->AttachCurrentThread(&java_env, NULL);
-    if (jni_return != JNI_OK)
+    if (jni_return != JNI_OK) {
         LOGE("GetEditedString(): -2");
-        //return -2;
+        zj_string e;
+        return e;
+    }
 
     jclass native_activity_clazz = java_env->GetObjectClass(app->activity->clazz);
-    if (native_activity_clazz == NULL)
+    if (native_activity_clazz == NULL) {
         LOGE("GetEditedString(): -3");
-        //return -3;
+        zj_string e;
+        return e;
+    }
 
     jmethodID method_id = java_env->GetMethodID(native_activity_clazz, "getEditedString", "()Ljava/lang/String;");
-    if (method_id == NULL)
+    if (method_id == NULL) {
         LOGE("GetEditedString(): -3");
-        //return -4;
+        zj_string e;
+        return e;
+    }
 
     //调用函数
     jstring jstr = (jstring)java_env->CallObjectMethod(app->activity->clazz, method_id);
@@ -291,9 +305,11 @@ static zj_string GetEditedString()
     java_env->DeleteLocalRef(jstr);
 
     jni_return = java_vm->DetachCurrentThread();
-    if (jni_return != JNI_OK)
+    if (jni_return != JNI_OK) {
         LOGE("GetEditedString(): -5");
-        //return -5;
+        zj_string e;
+        return e;
+    }
 
     return ret_str;
 }
