@@ -80,9 +80,10 @@ int main(int, char**)
     builder.AddText("敬业的语言学家每日委托按下退出");
     builder.AddText("显示文本。你好高考倒计时距离高考还有：天");
     builder.AddRanges(io.Fonts->GetGlyphRangesDefault()); // Add one of the default ranges
+    builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
     builder.BuildRanges(&ranges);                          // Build the final result (ordered ranges with all the unique characters submitted)
 
-    io.Fonts->AddFontFromFileTTF("zh-cn.ttf", 32.0f, nullptr, ranges.Data);
+    io.Fonts->AddFontFromFileTTF("LXGWWenKai-Regular.ttf", 32.0f, nullptr, ranges.Data);
     io.Fonts->Build();                                     // Build the atlas while 'ranges' is still in scope and not deleted.
 
 

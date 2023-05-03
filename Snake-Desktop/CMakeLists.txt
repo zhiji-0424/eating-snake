@@ -9,9 +9,10 @@ set(CMAKE_CXX_FLAGS
     "-std=c++11 -Wall -Wextra"
 )
 
-set(GLFW_PATH  "./glfw-3.3.8/")
-set(IMGUI_PATH "./imgui-1.89.4/")
-set(SRC_PATH   "./src/")
+set(GLFW_PATH  "../Snake-core/glfw-3.3.8/")
+set(IMGUI_PATH "../Snake-core/imgui-1.89.4/")
+set(STB_IMAGE_PATH "../Snake-core/stb_image/")
+set(SRC_PATH   "../Snake-core/snake/src/")
 
 include_directories(
     ${IMGUI_PATH}
@@ -20,13 +21,14 @@ include_directories(
 )
 
 set(SOURCE_CODES
-    ${SRC_PATH}/main.cpp
+    src/desktop-main.cpp
 )
 
-add_executable(${EXE_FILE_NAME} WIN32 ${SOURCE_CODES})
+add_executable(${EXE_FILE_NAME} WIN32 ${SOURCE_CODES}) #TODO: 使用if判断是否使用 WIN32 标签
 
 target_link_libraries(${EXE_FILE_NAME}
-    ${PROJECT_SOURCE_DIR}/bin/libglfw3.a
-    ${PROJECT_SOURCE_DIR}/bin/libdear_imgui.a
+    ${PROJECT_SOURCE_DIR}/prebuilt/bin/libglfw3.a
+    ${PROJECT_SOURCE_DIR}/prebuilt/bin/libdear_imgui.a
+    ${PROJECT_SOURCE_DIR}/prebuilt/bin/libstb_image.a
     opengl32.lib
 )

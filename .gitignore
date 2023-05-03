@@ -6,6 +6,7 @@ eating-snake
 # 工程文件
 bin/
 gen/
+build/
 
 # git-win 错误
 debug.log
