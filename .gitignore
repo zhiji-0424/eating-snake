@@ -7,6 +7,9 @@ eating-snake
 bin/
 gen/
 
+# git-win 错误
+debug.log
+
 # Prerequisites
 *.d
 
